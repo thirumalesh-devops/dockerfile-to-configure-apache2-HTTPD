@@ -1,18 +1,15 @@
 FROM ubuntu:latest
 
-LABEL maintainer="THIRUMALESH_THIRU"
+RUN apt-get -y update
+ 
+RUN apt-get install -y apache2 curl
 
-LABEL description="EXTRACTING THE TAR FILE"
+EXPOSE 80
 
-RUN apt-get update && \
-    apt-get install -y wget tar
+WORKDIR /var/www/html
 
-WORKDIR /app
+COPY index.html /var/www/html/index.html 
 
-ARG TAR_URL="https://my-bucket-index.s3.ap-south-1.amazonaws.com/classplays.tar.gz"
+ENTRYPOINT ["/usr/sbin/apache2ctl"]
 
-RUN wget $TAR_URL -O classplays.tar.gz && \
-    tar -xzvf classplays.tar.gz && \
-    rm classplays.tar.gz
-
-CMD ["/bin/bash"]
+CMD ["-D", "FOREGROUND"]
